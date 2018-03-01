@@ -1,61 +1,39 @@
 <template>
   <section>
     <h1>Jollywise App</h1>
-    <form class="form form--questions" v-bind:class="[(formState === 'step1') ? 'show' : 'hidden']">
-      <div class="form-group">
-        <label for="question1">Question 1: What is you name?</label>
+    <form class="form form--questions" :class="[(formState === 'step1') ? 'form--show' : 'form--hidden']">
+
+      <div class="form-group" v-for="(value, key, index) in form.step1">
+        <label :for="'question' + (index + 1)">Question {{index + 1}} : {{value.question}}</label>
         <section class="container">
-          <input v-model="form.q1" type="text" class="form-control" id="question1" placeholder="Could be Sir Launcelot of Camelot..">
+          <input :id="'question' + (index + 1)" v-model="value.answer" type="text" class="form-control" placeholder="Enter your answer..">
         </section>
       </div>
-      <div class="form-group">
-        <label for="question2">Question 2: What is your quest?</label>
-        <section class="container">
-          <input v-model="form.q2" type="text" class="form-control" id="question2" placeholder="Could be the Holy Grail...">
-        </section>
-      </div>
-      <div class="form-group">
-        <label for="question3">Question 3: What is your favorite colour?</label>
-        <section class="container">
-          <input v-model="form.q3" type="text" class="form-control" id="question3" placeholder="Could be blue... or yellow..">
-        </section>
-      </div>
-      <div class="form-group">
-        <label for="question4">Question 4: What is the capital of Assyria?</label>
-        <section class="container">
-          <input v-model="form.q4" type="text" class="form-control" id="question4" placeholder="I don't know that...">
-        </section>
-      </div>
-      <div class="form-group">
-        <label for="question5">Question 5: What is the air-speed velocity of an unladen swallow?</label>
-        <section class="container">
-          <input v-model="form.q5" type="text" class="form-control" id="question5" placeholder="What do you mean? An African or European swallow?...">
-        </section>
-      </div>
-      <button v-on:click.self.prevent="fetchAPI()" type="submit" class="btn btn-primary">Next</button>
+
+      <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Next</button>
+
     </form>
 
-    <form class="form form--sumbit" v-bind:class="[(formState === 'step2') ? 'show' : 'hidden']">
+    <form class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
+      <aside>
+        {{form.step1}}
+      </aside>
+
       <div class="form-group">
         <label for="username">Username</label>
         <section class="container">
-          <input v-model="form.username" type="text" class="form-control" id="username" placeholder="username">
+          <input v-model="form.step2.username" type="text" class="form-control" id="username" placeholder="username">
         </section>
       </div>
       <div class="form-group">
         <label for="question2">Your Email Address</label>
         <section class="container">
-          <input v-model="form.email" type="email" class="form-control" id="email" placeholder="name@example.com">
+          <input v-model="form.step2.email" type="email" class="form-control" id="email" placeholder="name@example.com">
         </section>
       </div>
       <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
-      <button v-on:click.self.prevent="fetchAPI()" type="submit" class="btn btn-primary">Submit</button>
+      <button v-on:click.self.prevent="submitResults()" type="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    <aside class="check-data">
-      {{data}}
-      {{form}}
-    </aside>
 
   </section>
 </template>
@@ -68,23 +46,62 @@ export default {
   name: 'Questions',
   data() {
     return {
-      formState: "step1",
+      formState: 'step1',
       data: [],
       errors: [],
-      form : {
-        q1: '',
-        q2: '',
-        q3: '',
-        q4: '',
-        q5: '',
-        username: '',
-        email: ''
+      form: {
+        step1: {
+          q1: {
+            question: 'What is you name?',
+            answer: ''
+          },
+          q2: {
+            question: 'What is your quest?',
+            answer: ''
+          },
+          q3: {
+            question: 'What is your favorite colour?',
+            answer: ''
+          },
+          q4: {
+            question: 'What is the capital of Assyria?',
+            answer: ''
+          },
+          q5: {
+            question: 'What is the air-speed velocity of an unladen swallow?',
+            answer: ''
+          },
+        },
+        step2: {
+          username: '',
+          email: ''
+        }
+      },
+      json: {
+        "social_type": "none",
+        "access_token": null,
+        "access_token_secret": null,
+        "device_id": null,
+        "email": "tester@jollywise.co.uk",
+        "first_name": "jon",
+        "last_name": "heffernan",
+        "dob": "",
+        "entrant_data": "{ }",
+        "entrant_private_data": "{ }",
+        "data": "{ }",
+        "private_data": "{ }",
+        "searchable": "",
+        "_xss_cookie": ""
       }
     }
   },
   methods: {
     changeFormState: function () {
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
+    },
+
+    submitResults: function () {
+      this.submitted = 'The results have been sent'
     },
 
     // Doing a get API for testing purposes
@@ -119,21 +136,24 @@ h1 {
 }
 
 .form {
-  -webkit-transition: all 0.7s ease-in-out;
-  -moz-transition: all 0.7s ease-in-out;
-  -o-transition: all 0.7s ease-in-out;
-  transition: all 0.7s ease-in-out;
-
-  &.hidden {
+  &--hidden {
     opacity: 0;
     height: 0;
     visibility: hidden;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
   }
 
-  &.show {
+  &--show {
     opacity: 1;
     height: auto;
     visibility: visible;
+    -webkit-transition: all 0.7s ease-in-out;
+    -moz-transition: all 0.7s ease-in-out;
+    -o-transition: all 0.7s ease-in-out;
+    transition: all 0.7s ease-in-out;
   }
 }
 
