@@ -1,7 +1,7 @@
 <template>
   <section>
-    <h1>Answer me these questions three ... no wait five</h1>
-    <form class="form--questions">
+    <h1>Jollywise App</h1>
+    <form class="form form--questions" v-bind:class="[(formState === 'step1') ? 'show' : 'hidden']">
       <div class="form-group">
         <label for="question1">Question 1: What is you name?</label>
         <section class="container">
@@ -32,10 +32,31 @@
           <input v-model="form.q5" type="text" class="form-control" id="question5" placeholder="What do you mean? An African or European swallow?...">
         </section>
       </div>
-      <button v-on:click="fetchAPI($event)" type="submit" class="btn btn-primary">Submit</button>
+      <button v-on:click.self.prevent="fetchAPI()" type="submit" class="btn btn-primary">Next</button>
     </form>
 
-    {{ data }}
+    <form class="form form--sumbit" v-bind:class="[(formState === 'step2') ? 'show' : 'hidden']">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <section class="container">
+          <input v-model="form.username" type="text" class="form-control" id="username" placeholder="username">
+        </section>
+      </div>
+      <div class="form-group">
+        <label for="question2">Your Email Address</label>
+        <section class="container">
+          <input v-model="form.email" type="email" class="form-control" id="email" placeholder="name@example.com">
+        </section>
+      </div>
+      <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
+      <button v-on:click.self.prevent="fetchAPI()" type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <aside class="check-data">
+      {{data}}
+      {{form}}
+    </aside>
+
   </section>
 </template>
 
@@ -47,6 +68,7 @@ export default {
   name: 'Questions',
   data() {
     return {
+      formState: "step1",
       data: [],
       errors: [],
       form : {
@@ -55,17 +77,19 @@ export default {
         q3: '',
         q4: '',
         q5: '',
+        username: '',
+        email: ''
       }
     }
   },
-  props: {
-    msg: String
-  },
   methods: {
-    // Doing a get API for testing purposes 
-    fetchAPI: function (event) {
-      if (event) event.preventDefault()
-      HTTPS.get('http://api.openweathermap.org/data/2.5/forecast/daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
+    changeFormState: function () {
+      (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
+    },
+
+    // Doing a get API for testing purposes
+    fetchAPI: function () {
+      HTTPS.get('daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
         .then(response => {
           this.data = response.data
         })
@@ -79,9 +103,40 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+aside {
+  background-color: white;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
+  width: 200px;
+  padding: 15px;
+}
 h1 {
   margin-bottom: 80px;
 }
+
+.form {
+  -webkit-transition: all 0.7s ease-in-out;
+  -moz-transition: all 0.7s ease-in-out;
+  -o-transition: all 0.7s ease-in-out;
+  transition: all 0.7s ease-in-out;
+
+  &.hidden {
+    opacity: 0;
+    height: 0;
+    visibility: hidden;
+  }
+
+  &.show {
+    opacity: 1;
+    height: auto;
+    visibility: visible;
+  }
+}
+
 label,
 .container {
   padding: {
@@ -120,6 +175,10 @@ input {
 
   min-height: 30px;
   width: 100%;
+
+  &::placeholder {
+    color: hsl(0, 0%, 80%);
+  }
 }
 
 </style>
