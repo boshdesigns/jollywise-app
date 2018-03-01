@@ -11,25 +11,25 @@
       <div class="form-group">
         <label for="question2">Question 2: What is your quest?</label>
         <section class="container">
-          <input v-model="form.q2" type="text" class="form-control" id="question1" placeholder="Could be the Holy Grail...">
+          <input v-model="form.q2" type="text" class="form-control" id="question2" placeholder="Could be the Holy Grail...">
         </section>
       </div>
       <div class="form-group">
         <label for="question3">Question 3: What is your favorite colour?</label>
         <section class="container">
-          <input v-model="form.q3" type="text" class="form-control" id="question1" placeholder="Could be blue... or yellow..">
+          <input v-model="form.q3" type="text" class="form-control" id="question3" placeholder="Could be blue... or yellow..">
         </section>
       </div>
       <div class="form-group">
         <label for="question4">Question 4: What is the capital of Assyria?</label>
         <section class="container">
-          <input v-model="form.q4" type="text" class="form-control" id="question1" placeholder="I don't know that...">
+          <input v-model="form.q4" type="text" class="form-control" id="question4" placeholder="I don't know that...">
         </section>
       </div>
       <div class="form-group">
         <label for="question5">Question 5: What is the air-speed velocity of an unladen swallow?</label>
         <section class="container">
-          <input v-model="form.q5" type="text" class="form-control" id="question1" placeholder="What do you mean? An African or European swallow?...">
+          <input v-model="form.q5" type="text" class="form-control" id="question5" placeholder="What do you mean? An African or European swallow?...">
         </section>
       </div>
       <button v-on:click="fetchAPI($event)" type="submit" class="btn btn-primary">Submit</button>
@@ -62,6 +62,7 @@ export default {
     msg: String
   },
   methods: {
+    // Doing a get API for testing purposes 
     fetchAPI: function (event) {
       if (event) event.preventDefault()
       HTTPS.get('http://api.openweathermap.org/data/2.5/forecast/daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')

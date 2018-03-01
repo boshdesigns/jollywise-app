@@ -1,9 +1,9 @@
-# jollywise-mk-two
+# Jollywise POSTing APP
 
-> Simple POSTing Application
+> POSTing Application
 
 Scaffold a simple Webpack vuejs application via vue-cli
-* vue init webpack-simple jollywise
+* vue init webpack-simple app-name
 
 Additional plugins for use inside the project
 * Bootstrap - https://getbootstrap.com
