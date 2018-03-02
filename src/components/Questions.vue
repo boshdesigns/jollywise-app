@@ -1,40 +1,53 @@
 <template>
-  <section>
-    <h1>Jollywise App</h1>
-    <form class="form form--questions" :class="[(formState === 'step1') ? 'form--show' : 'form--hidden']">
+  <section class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Jollywise App</h1>
+        <form id="step1" class="form form--questions" :class="[(formState === 'step1') ? 'form--show' : 'form--hidden']">
 
-      <div class="form-group" v-for="(value, key, index) in form.step1">
-        <label :for="'question' + (index + 1)">Question {{index + 1}} : {{value.question}}</label>
-        <section class="container">
-          <input :id="'question' + (index + 1)" v-model="value.answer" type="text" class="form-control" placeholder="Enter your answer..">
-        </section>
+          <div class="form-group" v-for="(value, key, index) in form.step1">
+            <label :for="'question' + (index + 1)">Question {{index + 1}} : {{value.question}}</label>
+            <section class="container">
+              <input :id="'question' + (index + 1)" v-model="value.answer" type="text" class="form-control" placeholder="Enter your answer...">
+            </section>
+          </div>
+
+          <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Next</button>
+
+        </form>
+
+        <form class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
+          <aside>
+            <ul>
+              <li v-for="(value, key, index) in form.step1">
+                <div>{{value.question}}</div><div>{{"Answer: " + value.answer}}</div>
+              </li>
+            </ul>
+          </aside>
+
+          <ul class="validate-errors" v-if="validateErrors.length">
+            <li class="alert alert-warning" role="alert" v-for="error in validateErrors">
+              {{error}}
+            </li>
+          </ul>
+
+          <div class="form-group">
+            <label for="username">Username</label>
+            <section class="container">
+              <input v-model="form.step2.username" type="text" class="form-control" id="username" placeholder="username">
+            </section>
+          </div>
+          <div class="form-group">
+            <label for="question2">Your Email Address</label>
+            <section class="container">
+              <input v-model="form.step2.email" type="email" class="form-control" id="email" placeholder="name@example.com">
+            </section>
+          </div>
+          <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
+          <button v-on:click.self.prevent="validate()" type="submit" class="btn btn-primary">Submit</button>
+        </form>
       </div>
-
-      <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Next</button>
-
-    </form>
-
-    <form class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
-      <aside>
-        {{form.step1}}
-      </aside>
-
-      <div class="form-group">
-        <label for="username">Username</label>
-        <section class="container">
-          <input v-model="form.step2.username" type="text" class="form-control" id="username" placeholder="username">
-        </section>
-      </div>
-      <div class="form-group">
-        <label for="question2">Your Email Address</label>
-        <section class="container">
-          <input v-model="form.step2.email" type="email" class="form-control" id="email" placeholder="name@example.com">
-        </section>
-      </div>
-      <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
-      <button v-on:click.self.prevent="submitResults()" type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
+    </div>
   </section>
 </template>
 
@@ -49,6 +62,7 @@ export default {
       formState: 'step1',
       data: [],
       errors: [],
+      validateErrors: [],
       form: {
         step1: {
           q1: {
@@ -76,32 +90,32 @@ export default {
           username: '',
           email: ''
         }
-      },
-      json: {
-        "social_type": "none",
-        "access_token": null,
-        "access_token_secret": null,
-        "device_id": null,
-        "email": "tester@jollywise.co.uk",
-        "first_name": "jon",
-        "last_name": "heffernan",
-        "dob": "",
-        "entrant_data": "{ }",
-        "entrant_private_data": "{ }",
-        "data": "{ }",
-        "private_data": "{ }",
-        "searchable": "",
-        "_xss_cookie": ""
       }
     }
   },
+
   methods: {
     changeFormState: function () {
+      // TODO: make this dynamic by checking against event.srcElement.form.id
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
     },
 
-    submitResults: function () {
-      this.submitted = 'The results have been sent'
+    // create simple validation
+    validate: function (e) {
+      this.validateErrors = [];
+      if(!this.form.step2.username) this.validateErrors.push("Name required.");
+      if(!this.form.step2.email) {
+        this.validateErrors.push("Email required.");
+      } else if(!this.validEmail(this.form.step2.email)) {
+        this.validateErrors.push("Valid email required.");
+      }
+      if(!this.validateErrors.length) return true;
+      e.preventDefault();
+    },
+
+    validEmail: function (email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
     },
 
     // Doing a get API for testing purposes
@@ -122,16 +136,34 @@ export default {
 <style scoped lang="scss">
 aside {
   background-color: white;
-  position: fixed;
-  top: 20px;
-  right: 20px;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
   -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
-  width: 200px;
+
+  margin: {
+    top: 20px;
+    right: auto;
+    bottom: 20px;
+    left: auto;
+  }
   padding: 15px;
+
+
+  text-align: center;
+  max-width: 600px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    li {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+  }
 }
+
 h1 {
+  color: hsl(211, 100%, 75%);
   margin-bottom: 80px;
 }
 
@@ -139,6 +171,7 @@ h1 {
   &--hidden {
     opacity: 0;
     height: 0;
+    overflow: hidden;
     visibility: hidden;
     -webkit-transition: all 0.1s ease-in-out;
     -moz-transition: all 0.1s ease-in-out;
@@ -157,8 +190,11 @@ h1 {
   }
 }
 
-label,
 .container {
+  max-width: 720px;
+}
+
+label {
   padding: {
     right: 15px;
     left: 15px;
@@ -168,7 +204,6 @@ label,
     right: auto;
     left: auto;
   }
-  max-width: 600px;
   width: 100%;
 }
 
@@ -199,6 +234,15 @@ input {
   &::placeholder {
     color: hsl(0, 0%, 80%);
   }
+}
+
+.validate-errors {
+  list-style: none;
+  margin: {
+    top: 20px;
+    bottom: 20px;
+  }
+  padding: 0;
 }
 
 </style>

@@ -20,6 +20,12 @@ body {
   background-color: hsl(0, 0%, 98%);
 }
 
+footer {
+  background-color: hsl(211, 100%, 75%);
+  margin-top: 90px;
+  height: 100px;
+}
+
 figure {
   margin: 0;
 }
