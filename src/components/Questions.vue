@@ -53,7 +53,7 @@
 
 <script>
 // Import the baseURL from https-config
-import {HTTPS} from './config/https-config.js'
+import {HTTPS} from '@/config/https-config.js'
 
 export default {
   name: 'Questions',
