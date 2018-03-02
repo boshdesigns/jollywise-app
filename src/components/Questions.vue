@@ -11,6 +11,7 @@
             </section>
           </div>
 
+          <button @click.self.prevent="emit()">test</button>
           <router-link class="btn btn-primary" :to="{ path: 'results' }" tag="button" type="submit">Next</router-link>
 
         </form>
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+
+import { EventBus } from '@/event-bus.js';
 
 export default {
   name: 'Questions',
@@ -60,6 +63,10 @@ export default {
     changeFormState: function () {
       // TODO: make this dynamic by checking against event.srcElement.form.id
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
+    },
+    emit() {
+       EventBus.$emit('test', this.form);
+       console.log('emitted');
     }
   }
 }

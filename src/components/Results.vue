@@ -42,11 +42,17 @@
 // Import the baseURL from https-config
 import {HTTPS} from '@/config/https-config.js'
 
+import { EventBus } from '@/event-bus.js';
+
+EventBus.$on('test', function (payload) {
+  var formdata = payload;
+});
+
 export default {
   name: 'Results',
   data() {
     return {
-      data: [],
+      data: [formdata],
       formState: 'step2',
       postData: [],
       postErrors: [],
@@ -58,6 +64,9 @@ export default {
         }
       }
     }
+  },
+  created () {
+
   },
 
   methods: {
