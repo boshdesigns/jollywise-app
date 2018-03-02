@@ -1,6 +1,8 @@
 var path = require('path')
 var webpack = require('webpack')
 
+console.log(path);
+
 module.exports = {
   entry: './src/main.js',
   output: {
@@ -71,6 +73,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, 'src'),
       'vue$': 'vue/dist/vue.esm.js'
     },
     extensions: ['*', '.js', '.vue', '.json']
