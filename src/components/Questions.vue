@@ -3,6 +3,8 @@
     <div class="row">
       <div class="col-sm-12">
         <h1>Jollywise App</h1>
+
+        <!-- Form Step 1 -->
         <form id="step1" class="form form--questions" :class="[(formState === 'step1') ? 'form--show' : 'form--hidden']">
 
           <div class="form-group" v-for="(value, key, index) in form.step1">
@@ -16,7 +18,8 @@
 
         </form>
 
-        <form class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
+        <!-- Form Step 2 -->
+        <form id="step2" class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
           <aside>
             <ul>
               <li v-for="(value, key, index) in form.step1">
@@ -31,23 +34,27 @@
             </li>
           </ul>
 
-          <div class="form-group">
-            <label for="username">Username</label>
-            <section class="container">
-              <input v-model="form.step2.username" type="text" class="form-control" id="username" placeholder="username">
+          <div class="form-group" v-for="(value, key, index) in form.step2">
+            <label :for="key">Your {{ key | capitalise }}</label>
+            <section class="container" v-if="key === 'firstname'">
+              <input :id="value.value" v-model="value.value" type="text" class="form-control" placeholder="Enter your firstname...">
+            </section>
+            <section class="container" v-else-if="key === 'lastname'">
+              <input :id="value.value" v-model="value.value" type="text" class="form-control" placeholder="Enter your lastname...">
+            </section>
+            <section class="container" v-else-if="key === 'email'">
+              <input :id="value.value" v-model="value.value" type="text" class="form-control" placeholder="Enter your email address...">
             </section>
           </div>
-          <div class="form-group">
-            <label for="question2">Your Email Address</label>
-            <section class="container">
-              <input v-model="form.step2.email" type="email" class="form-control" id="email" placeholder="name@example.com">
-            </section>
-          </div>
+
           <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
           <button v-on:click.self.prevent="validate()" type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>
+
+    <pre v-cloak>
+    </pre>
   </section>
 </template>
 
@@ -60,8 +67,6 @@ export default {
   data() {
     return {
       formState: 'step1',
-      postData: [],
-      postErrors: [],
       validateErrors: [],
       form: {
         step1: {
@@ -87,8 +92,15 @@ export default {
           },
         },
         step2: {
-          username: '',
-          email: ''
+          firstname: {
+            value: ''
+          },
+          lastname: {
+            value: ''
+          },
+          email: {
+            value: ''
+          }
         }
       }
     }
@@ -103,19 +115,42 @@ export default {
     // create simple validation
     validate: function (event) {
       this.validateErrors = [];
-      if(!this.form.step2.username) this.validateErrors.push("Name required.");
-      if(!this.form.step2.email) {
+      if(!this.form.step2.firstname.value) this.validateErrors.push("Firstname required.");
+      if(!this.form.step2.lastname.value) this.validateErrors.push("Lastname required.");
+      if(!this.form.step2.email.value) {
         this.validateErrors.push("Email required.");
-      } else if(!this.validEmail(this.form.step2.email)) {
+      } else if(!this.validEmail(this.form.step2.email.value)) {
         this.validateErrors.push("Valid email required.");
       }
-      if(!this.validateErrors.length) return true;
-      event.preventDefault();
+      // validation is all good built up the json
+      if(!this.validateErrors.length) {
+        submitResponse()
+      }
     },
 
     validEmail: function (email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
+    },
+
+    submitResponse: function () {
+      const formData = {
+        social_type: "none",
+        access_token: '',
+        access_token_secret: '',
+        device_id: '',
+        email: this.form.step2.email.value,
+        first_name: this.form.step2.firstname.value,
+        last_name: this.form.step2.lastname.value,
+        dob: '',
+        entrant_data: this.form.step1,
+        entrant_private_data: {},
+        data: {},
+        private_data: {},
+        searchable: '',
+        _xss_cookie: ''
+      }
+      console.log(formData);
     },
 
     // Doing a get API for testing purposes
@@ -128,6 +163,13 @@ export default {
           this.errors.push(e)
         })
     }
+  },
+  filters: {
+    capitalise: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
   }
 }
 </script>
@@ -243,6 +285,10 @@ input {
     bottom: 20px;
   }
   padding: 0;
+}
+
+[v-cloak] {
+  display: none;
 }
 
 </style>
