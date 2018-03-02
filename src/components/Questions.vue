@@ -27,7 +27,7 @@
 
           <ul class="validate-errors" v-if="validateErrors.length">
             <li class="alert alert-warning" role="alert" v-for="error in validateErrors">
-              {{error}}
+              {{ error }}
             </li>
           </ul>
 
@@ -60,9 +60,9 @@ export default {
   data() {
     return {
       formState: 'step1',
-      data: [],
-      errors: [],
-      validateErrors: [],
+      postData: null,
+      postErrors: null,
+      validateErrors: null,
       form: {
         step1: {
           q1: {
@@ -101,7 +101,7 @@ export default {
     },
 
     // create simple validation
-    validate: function (e) {
+    validate: function (event) {
       this.validateErrors = [];
       if(!this.form.step2.username) this.validateErrors.push("Name required.");
       if(!this.form.step2.email) {
@@ -110,7 +110,7 @@ export default {
         this.validateErrors.push("Valid email required.");
       }
       if(!this.validateErrors.length) return true;
-      e.preventDefault();
+      event.preventDefault();
     },
 
     validEmail: function (email) {
