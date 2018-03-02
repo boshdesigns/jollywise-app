@@ -60,9 +60,9 @@ export default {
   data() {
     return {
       formState: 'step1',
-      postData: null,
-      postErrors: null,
-      validateErrors: null,
+      postData: [],
+      postErrors: [],
+      validateErrors: [],
       form: {
         step1: {
           q1: {
