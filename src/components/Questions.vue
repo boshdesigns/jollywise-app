@@ -2,7 +2,6 @@
   <section class="container">
     <div class="row">
       <div class="col-sm-12">
-        <h1>Jollywise App</h1>
         <form id="step1" class="form form--questions" :class="[(formState === 'step1') ? 'form--show' : 'form--hidden']">
 
           <div class="form-group" v-for="(value, key, index) in form.step1">
@@ -15,45 +14,12 @@
           <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Next</button>
 
         </form>
-
-        <form class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
-          <aside>
-            <ul>
-              <li v-for="(value, key, index) in form.step1">
-                <div>{{value.question}}</div><div>{{"Answer: " + value.answer}}</div>
-              </li>
-            </ul>
-          </aside>
-
-          <ul class="validate-errors" v-if="validateErrors.length">
-            <li class="alert alert-warning" role="alert" v-for="error in validateErrors">
-              {{ error }}
-            </li>
-          </ul>
-
-          <div class="form-group">
-            <label for="username">Username</label>
-            <section class="container">
-              <input v-model="form.step2.username" type="text" class="form-control" id="username" placeholder="username">
-            </section>
-          </div>
-          <div class="form-group">
-            <label for="question2">Your Email Address</label>
-            <section class="container">
-              <input v-model="form.step2.email" type="email" class="form-control" id="email" placeholder="name@example.com">
-            </section>
-          </div>
-          <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
-          <button v-on:click.self.prevent="validate()" type="submit" class="btn btn-primary">Submit</button>
-        </form>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-// Import the baseURL from https-config
-import {HTTPS} from './config/https-config.js'
 
 export default {
   name: 'Questions',
@@ -85,10 +51,6 @@ export default {
             question: 'What is the air-speed velocity of an unladen swallow?',
             answer: ''
           },
-        },
-        step2: {
-          username: '',
-          email: ''
         }
       }
     }
@@ -98,35 +60,6 @@ export default {
     changeFormState: function () {
       // TODO: make this dynamic by checking against event.srcElement.form.id
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
-    },
-
-    // create simple validation
-    validate: function (event) {
-      this.validateErrors = [];
-      if(!this.form.step2.username) this.validateErrors.push("Name required.");
-      if(!this.form.step2.email) {
-        this.validateErrors.push("Email required.");
-      } else if(!this.validEmail(this.form.step2.email)) {
-        this.validateErrors.push("Valid email required.");
-      }
-      if(!this.validateErrors.length) return true;
-      event.preventDefault();
-    },
-
-    validEmail: function (email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
-    },
-
-    // Doing a get API for testing purposes
-    fetchAPI: function () {
-      HTTPS.get('daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
-        .then(response => {
-          this.data = response.data
-        })
-        .catch(e => {
-          this.errors.push(e)
-        })
     }
   }
 }
@@ -160,11 +93,6 @@ aside {
       margin-bottom: 10px;
     }
   }
-}
-
-h1 {
-  color: hsl(211, 100%, 75%);
-  margin-bottom: 80px;
 }
 
 .form {

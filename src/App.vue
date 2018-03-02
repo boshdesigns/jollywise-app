@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1>POSTing App</h1>
     <Questions/>
   </div>
 </template>
@@ -24,6 +25,11 @@ footer {
   background-color: hsl(211, 100%, 75%);
   margin-top: 90px;
   height: 100px;
+}
+
+h1 {
+  color: hsl(211, 100%, 75%);
+  margin-bottom: 80px;
 }
 
 figure {
