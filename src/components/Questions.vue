@@ -11,8 +11,7 @@
             </section>
           </div>
 
-          <router-link class="btn btn-primary" :to="{ path: 'results' }">Home</router-link>
-          <!-- <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Next</button> -->
+          <router-link class="btn btn-primary" :to="{ path: 'results' }" tag="button" type="submit">Next</router-link>
 
         </form>
       </div>

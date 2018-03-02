@@ -30,21 +30,23 @@
             </section>
           </div>
           <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
-          <button v-on:click.self.prevent="validate()" type="submit" class="btn btn-primary">Submit</button>
+          <button v-on:click.self.prevent="fetchAPI()" type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>
+    {{data}}
   </section>
 </template>
 
 <script>
 // Import the baseURL from https-config
-import {HTTPS} from './config/https-config.js'
+import {HTTPS} from '@/config/https-config.js'
 
 export default {
   name: 'Results',
   data() {
     return {
+      data: [],
       formState: 'step2',
       postData: [],
       postErrors: [],
@@ -59,7 +61,6 @@ export default {
   },
 
   methods: {
-
     // create simple validation
     validate: function (event) {
       this.validateErrors = [];
