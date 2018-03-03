@@ -18,6 +18,7 @@
 
         </form>
 
+
         <!-- Form Step 2 -->
         <form id="step2" class="form form--sumbit" :class="[(formState === 'step2') ? 'form--show' : 'form--hidden']">
           <aside>
@@ -53,8 +54,6 @@
       </div>
     </div>
 
-    <pre v-cloak>
-    </pre>
   </section>
 </template>
 
@@ -68,6 +67,7 @@ export default {
     return {
       formState: 'step1',
       validateErrors: [],
+      form: ['step1'],
       form: {
         step1: {
           q1: {
@@ -112,7 +112,14 @@ export default {
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
     },
 
-    // create simple validation
+    toObject: function (arr) {
+      var rv = {};
+      for (var i = 0; i < arr.length; ++i)
+        if (arr[i] !== undefined) rv[i] = {"answer":arr[i]};
+      return rv;
+    },
+
+    // Create simple validation
     validate: function (event) {
       this.validateErrors = [];
       if(!this.form.step2.firstname.value) this.validateErrors.push("Firstname required.");
@@ -122,9 +129,9 @@ export default {
       } else if(!this.validEmail(this.form.step2.email.value)) {
         this.validateErrors.push("Valid email required.");
       }
-      // validation is all good built up the json
+      // if validation is all good trigger the post
       if(!this.validateErrors.length) {
-        submitResponse()
+        this.submitResponse()
       }
     },
 
@@ -134,6 +141,13 @@ export default {
     },
 
     submitResponse: function () {
+      let answers = []
+
+      for (var key in this.form.step1) {
+        answers.push(this.form.step1[key].answer);
+      }
+
+
       const formData = {
         social_type: "none",
         access_token: '',
@@ -143,26 +157,23 @@ export default {
         first_name: this.form.step2.firstname.value,
         last_name: this.form.step2.lastname.value,
         dob: '',
-        entrant_data: this.form.step1,
-        entrant_private_data: {},
-        data: {},
-        private_data: {},
+        entrant_data: this.toObject(answers),
+        entrant_private_data: '',
+        data: '',
+        private_data: '',
         searchable: '',
         _xss_cookie: ''
       }
-      console.log(formData);
-    },
 
-    // Doing a get API for testing purposes
-    fetchAPI: function () {
-      HTTPS.get('daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
-        .then(response => {
-          this.data = response.data
-        })
-        .catch(e => {
-          this.errors.push(e)
-        })
-    }
+
+      console.log(JSON.stringify(formData));
+      // HTTPS.get('daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
+      //   .then(res => { console.log(res.data) })
+      //   .catch(e => {
+      //     //this.errors.push(e)
+      //     console.log(e)
+      //   })
+    },
   },
   filters: {
     capitalise: function (value) {
