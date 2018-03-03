@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export const HTTPS = axios.create({
-  baseURL: 'https://jollyapps.jollywise.co.uk/api/enter/en_GB/jollywise/ashtest/',
+  baseURL: 'https://jollyapps.jollywise.co.uk/api/enter/en_GB/jollywise/',
   headers: {
-    // added headers if needed
+    'Content-Type': 'application/json'
   }
 })

@@ -53,7 +53,6 @@
         </form>
       </div>
     </div>
-
   </section>
 </template>
 
@@ -152,30 +151,29 @@ export default {
 
 
       const formData = {
-        social_type: "none",
-        access_token: "none",
-        access_token_secret: "none",
-        device_id: "none",
-        email: this.form.step2.email.value,
-        first_name: this.form.step2.firstname.value,
-        last_name: this.form.step2.lastname.value,
-        dob: "none",
-        entrant_data: this.toObject(answers),
-        entrant_private_data: "none",
-        data: "none",
-        private_data: "none",
-        searchable: "none",
-        _xss_cookie: "none"
+        "social_type": "none",
+        "access_token": "none",
+        "access_token_secret": "none",
+        "device_id": "none",
+        "email": this.form.step2.email.value,
+        "first_name": this.form.step2.firstname.value,
+        "last_name": this.form.step2.lastname.value,
+        "dob": "none",
+        "entrant_data": this.toObject(answers),
+        "entrant_private_data": "none",
+        "data": "none",
+        "private_data": "none",
+        "searchable": "none",
+        "_xss_cookie": "none"
       }
 
-
-      console.log(JSON.stringify(formData));
-      // HTTPS.get('daily?APPID=4f5a6fa2ae1f25030eda6cff7c97de4a&q=brighton&cnt=16')
-      //   .then(res => { console.log(res.data) })
-      //   .catch(e => {
-      //     //this.errors.push(e)
-      //     console.log(e)
-      //   })
+      HTTPS.post('ashtest', JSON.stringify(formData))
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(e => {
+          this.postErrors.push(e)
+        })
     },
   },
   filters: {
