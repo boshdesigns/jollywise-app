@@ -67,7 +67,6 @@ export default {
     return {
       formState: 'step1',
       validateErrors: [],
-      form: ['step1'],
       form: {
         step1: {
           q1: {
@@ -141,8 +140,12 @@ export default {
     },
 
     submitResponse: function () {
+
+      // Rip out the answers so these sit in their own object
       let answers = []
 
+      // add the answers to the empty array
+      // We will change these back to an object
       for (var key in this.form.step1) {
         answers.push(this.form.step1[key].answer);
       }
@@ -150,19 +153,19 @@ export default {
 
       const formData = {
         social_type: "none",
-        access_token: '',
-        access_token_secret: '',
-        device_id: '',
+        access_token: "none",
+        access_token_secret: "none",
+        device_id: "none",
         email: this.form.step2.email.value,
         first_name: this.form.step2.firstname.value,
         last_name: this.form.step2.lastname.value,
-        dob: '',
+        dob: "none",
         entrant_data: this.toObject(answers),
-        entrant_private_data: '',
-        data: '',
-        private_data: '',
-        searchable: '',
-        _xss_cookie: ''
+        entrant_private_data: "none",
+        data: "none",
+        private_data: "none",
+        searchable: "none",
+        _xss_cookie: "none"
       }
 
 
