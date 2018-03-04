@@ -169,7 +169,7 @@ export default {
 
       // test setting up FormData
       var formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', 'file');
 
       HTTPS.post('ashtest', formData)
         .then(response => {
