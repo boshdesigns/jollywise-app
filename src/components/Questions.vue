@@ -149,8 +149,8 @@ export default {
         answers.push(this.form.step1[key].answer);
       }
 
-
-      const formData = {
+      // Setup the data set to Post
+      const postData = {
         "social_type": "none",
         "access_token": "none",
         "access_token_secret": "none",
@@ -167,7 +167,11 @@ export default {
         "_xss_cookie": "none"
       }
 
-      HTTPS.post('ashtest', JSON.stringify(formData))
+      // test setting up FormData
+      var formData = new FormData();
+      formData.append('file', file);
+
+      HTTPS.post('ashtest', formData)
         .then(response => {
           console.log(response.data);
         })
