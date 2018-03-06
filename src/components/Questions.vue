@@ -36,8 +36,17 @@
             </li>
           </ul>
 
+          <section class="submittion-message" v-if="submitMessage.shouldShow === true">
+            <div v-if="submitMessage.messageType === 'success'" class="alert alert-success" role="alert">
+              {{submitMessage.message}}
+            </div>
+            <div v-if="submitMessage.messageType === 'error'" class="alert alert-warning" role="alert">
+              {{submitMessage.message}}
+            </div>
+          </section>
+
           <!-- Form Step 2 -->
-          <form id="step2" class="form form--sumbit" >
+          <form id="step2" class="form form--sumbit">
             <div class="form-group" v-for="(value, key, index) in form.step2">
               <label :for="key">Your {{ key | capitalise }}</label>
               <section class="container" v-if="key === 'firstname'">
@@ -54,8 +63,8 @@
             <button v-on:click.self.prevent="changeFormState()" type="submit" class="btn btn-primary">Back</button>
             <button v-on:click.self.prevent="validate()" type="submit" class="btn btn-primary">Submit</button>
 
-            <section v-if="sumbitLoader == true" class="loader"></section>
-          
+            <section v-if="submitLoader === true" class="loader"></section>
+
           </form>
         </section>
 
@@ -77,7 +86,11 @@ export default {
       formState: 'step1',
       validateErrors: [],
       submitLoader: false,
-      submitMessage: '',
+      submitMessage: {
+        shouldShow: false,
+        message: '',
+        messageType: ''
+      },
       form: {
         step1: {
           q1: {
@@ -118,7 +131,6 @@ export default {
 
   methods: {
     changeFormState: function () {
-      // TODO: make this dynamic by checking against event.srcElement.form.id
       (this.formState == 'step1') ? this.formState = 'step2' : this.formState = 'step1'
     },
 
@@ -153,7 +165,7 @@ export default {
     submitResponse: function () {
 
       // Set a loader SVG whilst submitting
-      this.submitLoader = ture
+      this.submitLoader = true
 
       // Rip out the answers so these sit in their own object
       let answers = []
@@ -191,18 +203,24 @@ export default {
         formData.append(key, postData[key]);
       }
 
-      for (var value of formData.values()) {
-         console.log(value);
-      }
-
 
       // Lastly send the data
       HTTPS.post('ashtest', formData)
         .then(response => {
-          console.log(response.data);
           if(response.data.result === "SUCCESS") {
-            this.submitLoader = false
-            this.submitMessage = true
+            this.submitLoader = false;
+            this.submitMessage.messageType = "success";
+            this.submitMessage.shouldShow = true;
+
+            this.submitMessage.message = "Your entire has been successfully sent!";
+
+          } else if (response.data.result === "ERROR") {
+            this.submitLoader = false;
+            this.submitMessage.messageType = "error";
+            this.submitMessage.shouldShow = true;
+
+            this.submitMessage.message = "Unfortunately this wasn't successfully this time around.";
+
           }
         })
         .catch(e => {
@@ -335,15 +353,22 @@ input {
 
 #step2 {
   height: 100%;
+  padding: {
+    top: 20px;
+    bottom: 20px;
+  }
   position: relative;
 
   .loader {
     background: {
-      color: hsla(0, 0%, 0%, 0.7);
+      color: hsla(0, 0%, 0%, 0.3);
       repeat: no-repeat;
       image: url('../assets/oval.svg');
       position: center center;
     }
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
     height: 100%;
     position: absolute;
     top: 0;
